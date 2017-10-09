@@ -12,7 +12,54 @@ import requests
 
 ######### PART 0 #########
 
-# Write your code for Part 0 here.
+
+
+# make a function for caching pattern
+def get_from_cache(url,file_name):
+    try:
+        html = open(file_name,'r').read()
+    except:
+        html = requests.get(url).text # request object FIRST and use .text to convert it to a string
+        f = open(file_name,'w')
+        f.write(html)
+        f.close()
+
+    return (html) # return string of HTML data that we can then parse through
+
+gallery_html = get_from_cache("http://newmantaylor.com/gallery.html","gallery.html")
+soup = BeautifulSoup(gallery_html, 'html.parser')
+        # .find() gives you the FIRST tag the parser sees
+        # .find_all() gives a list of all the tags
+
+image_texts = soup.find_all("img")
+
+for i in image_texts:
+    try:
+        text = i['alt']
+    except:
+        text = "No alternative text provided!"
+    print(text)
+#title = a.find("h3").text.strip() # removes all hidden whitespaces
+
+#texts = image_alt-texts[0]
+#print(soup.prettify())
+#print(soup.img)
+#print(image_texts)
+
+
+
+
+first_image = image_texts[0]
+desc = first_image.get('alt', '')
+#desc = first_image['alt']
+#print(first_image)
+print(desc)
+
+
+
+
+
+
 
 
 ######### PART 1 #########
