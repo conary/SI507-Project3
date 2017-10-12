@@ -74,6 +74,15 @@ for i in image_texts:
 
 # We've provided comments to guide you through the complex try/except, but if you prefer to build up the code to do this scraping and caching yourself, that is OK.
 
+try:
+    pass
+except Exception as e:
+    raise
+else:
+    pass
+finally:
+    pass
+
 main_html = get_from_cache("https://www.nps.gov/index.htm","nps_gov_data.html")
 
 
@@ -88,8 +97,10 @@ main_html = get_from_cache("https://www.nps.gov/index.htm","nps_gov_data.html")
 #def get_state_from_cache(url,file_name):
 # TRY: 
 # To open and read all 3 of the files
+
+
 try:
-    arkansas_html = open("nps_gov_data.html",'r').read()
+    arkansas_html = open("arkansas_data.html",'r').read()
     california_html = open("california_data.html", 'r').read()
     michigan_html = open("michigan_data.html",'r').read()
 
@@ -101,45 +112,60 @@ except:
     #print(soup.prettify)
 
 # Access the unordered list with the states' dropdown
-ul = soup.find ("ul", {"class":"dropdown-menu SearchBar-keywordSearch"})   
+    ul = soup.find ("ul", {"class":"dropdown-menu SearchBar-keywordSearch"})   
 
 # Get a list of all the li (list elements) from the unordered list, using the BeautifulSoup find_all method
-states = ul.find_all ("li")
-
-
-
-
-    
+    states = ul.find_all ("li") 
 # Use a list comprehension or accumulation to get all of the 'href' attributes of the 'a' tag objects in each li, instead of the full li objects
-for state in states:
-
-    url = state.find("a")["href"]
-    
-    print(url)
-
-    #print(state.href)
-    #url = state.find("href")
+    urls = []
+    for state in states:
+        url = state.find("a")["href"]
     #print(url)
-    
-
-
+        urls.append(url)
+#print(urls)
 # Filter the list of relative URLs you just got to include only the 3 you want: AR's, CA's, MI's, using the accumulator pattern & conditional statements
-
-
+    final_urls = []
+    for url in urls:
+        if "/ar/" in url:
+            final_urls.append(url)
+        if "/ca/" in url:
+            final_urls.append(url)
+        if "mi" in url:
+            final_urls.append(url)
+    print(final_urls)
+    
 # Create 3 URLs to access data from by appending those 3 href values to the main part of the NPS url. Save each URL in a variable.
+    for state in final_urls:
+        if "ar" in state:
+            arkansas_url = "https://www.nps.gov" + state
+        if "ca" in state:
+            california_url = "https://www.nps.gov" + state
+        if "mi" in state:
+            michigan_url = "https://www.nps.gov" + state
 
+    print(arkansas_url)
+    print(california_url)
+    print(michigan_url)
 
 ## To figure out what URLs you want to get data from (as if you weren't told initially)...
 # As seen if you debug on the actual site. e.g. Maine parks URL is "http://www.nps.gov/state/me/index.htm", Michigan's is "http://www.nps.gov/state/mi/index.htm" -- so if you compare that to the values in those href attributes you just got... how can you build the full URLs?
 
 
+
+
 # Finally, get the HTML data from each of these URLs, and save it in the variables you used in the try clause
 # (Make sure they're the same variables you used in the try clause! Otherwise, all this code will run every time you run the program!)
-
+    
+    arkansas_html = get_from_cache(arkansas_url,"arkansas_data.html")
+    california_html = get_from_cache(california_url, "california_data.html")
+    michigan_html = get_from_cache(michigan_url, "michigan_data.html")
+    
 
 # And then, write each set of data to a file so this won't have to run again.
 
-
+    print(arkansas_html)
+    print(california_html)
+    print(michigan_html)
 
 
 
