@@ -49,11 +49,11 @@ for i in image_texts:
 
 
 
-first_image = image_texts[0]
-desc = first_image.get('alt', '')
-#desc = first_image['alt']
+#first_image = image_texts[0]
+#desc = first_image.get('alt', '')
+##desc = first_image['alt']
 #print(first_image)
-print(desc)
+#print(desc)
 
 
 
@@ -74,8 +74,7 @@ print(desc)
 
 # We've provided comments to guide you through the complex try/except, but if you prefer to build up the code to do this scraping and caching yourself, that is OK.
 
-
-
+main_html = get_from_cache("https://www.nps.gov/index.htm","nps_gov_data.html")
 
 
 
@@ -86,18 +85,40 @@ print(desc)
 # and the HTML-formatted text stored in each one is available
 # in a variable or data structure 
 # that the rest of the program can access.
-
+#def get_state_from_cache(url,file_name):
 # TRY: 
 # To open and read all 3 of the files
+try:
+    arkansas_html = open("nps_gov_data.html",'r').read()
+    california_html = open("california_data.html", 'r').read()
+    michigan_html = open("michigan_data.html",'r').read()
 
 # But if you can't, EXCEPT:
-
+except:
 # Create a BeautifulSoup instance of main page data 
+
+    soup = BeautifulSoup(main_html, 'html.parser')
+    #print(soup.prettify)
+
 # Access the unordered list with the states' dropdown
+ul = soup.find ("ul", {"class":"dropdown-menu SearchBar-keywordSearch"})   
 
 # Get a list of all the li (list elements) from the unordered list, using the BeautifulSoup find_all method
+states = ul.find_all ("li")
 
+
+
+
+    
 # Use a list comprehension or accumulation to get all of the 'href' attributes of the 'a' tag objects in each li, instead of the full li objects
+for state in states:
+    print(state)
+    print(state.href)
+    #print(state.href)
+    #url = state.find("href")
+    #print(url)
+    
+
 
 # Filter the list of relative URLs you just got to include only the 3 you want: AR's, CA's, MI's, using the accumulator pattern & conditional statements
 
