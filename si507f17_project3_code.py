@@ -112,8 +112,11 @@ states = ul.find_all ("li")
     
 # Use a list comprehension or accumulation to get all of the 'href' attributes of the 'a' tag objects in each li, instead of the full li objects
 for state in states:
-    print(state)
-    print(state.href)
+
+    url = state.find("a")["href"]
+    
+    print(url)
+
     #print(state.href)
     #url = state.find("href")
     #print(url)
