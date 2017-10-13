@@ -1,6 +1,11 @@
 from bs4 import BeautifulSoup
 import unittest
 import requests
+import urllib.request
+import urllib.parse
+import urllib.error
+import ssl
+
 
 #########
 ## Instr note: the outline comments will stay as suggestions, otherwise it's too difficult.
@@ -169,7 +174,7 @@ ar_soup = BeautifulSoup(arkansas_html, 'html.parser')
 ca_soup = BeautifulSoup(california_html, 'html.parser')
 mi_soup = BeautifulSoup(michigan_html, 'html.parser')
 
-#print(ar_soup.prettify())
+# print(ar_soup.prettify())
 # - Create BeautifulSoup objects out of all the data you have access to in variables from Part 1
 # - Do some investigation on those BeautifulSoup objects. What data do you have about each state? How is it organized in HTML?
 
@@ -193,23 +198,69 @@ mi_soup = BeautifulSoup(michigan_html, 'html.parser')
 class NationalSite:
     def __init__(self, bs):
         self.location = bs.find('h4').text
+        self.cache_fn = self.location[-2] + self.location[-1]
         self.type = bs.find('h2').text
         self.name = bs.find('h3').text
         self.description = bs.find('p').text
-        print(self.name)
-        print(self.type)
-        print(self.location)
-        print(self.description)
+        self.detail_url_part = bs.find('a').get('href')
+        self.detail_url = "https://www.nps.gov" + self.detail_url_part + "index.htm"
+
+        #print(self.name)
+        #print(self.type)
+        #print(self.location)
+        #print(self.description)
+        #print(self.detail_url)
+        
+
+    def __str__(self):
+        return "{} | {}".format(
+            self.name,
+            self.location
+            )
+    def get_mailing_address(self): 
+        detail_html = get_from_cache(self.detail_url, self.cache_fn)
+        detail_soup = BeautifulSoup(detail_html, 'html.parser')
+        #print(detail_soup.prettify())
+        if detail_soup.find('div', class_="mailing-address") == '':
+            return("")   
+        address = detail_soup.find('div', class_="mailing-address")
+        street = address.find('div', {'itemprop':'address'}).text.strip()
+        address_line = street.replace('\n', '/')
+        address_line_final = ''
+        dup_count = 0
+        for char in address_line:
+            if char != '/':
+                address_line_final = address_line_final + char
+                dup_count = 0
+            else:
+                if dup_count == 0:
+                    address_line_final = address_line_final + char
+                    dup_count = dup_count + 1
+        return address_line_final
+        
+    def __contains__(self, check):
+        if check in self.name:
+            return True
+        else:
+            return False
+
+
+
 
 
 
 
 ## Recommendation: to test the class, at various points, uncomment the following code and invoke some of the methods / check out the instance variables of the test instance saved in the variable sample_inst:
 
-f = open("sample_html_of_park.html",'r')
-soup_park_inst = BeautifulSoup(f.read(), 'html.parser') # an example of 1 BeautifulSoup instance to pass into your class
-sample_inst = NationalSite(soup_park_inst)
-f.close()
+#f = open("sample_html_of_park.html",'r')
+#soup_park_inst = BeautifulSoup(f.read(), 'html.parser') # an example of 1 BeautifulSoup instance to pass into your class
+#sample_inst = NationalSite(soup_park_inst)
+#print(sample_inst)
+#print(sample_inst.get_mailing_address())
+#f.close()
+
+
+
 
 
 ######### PART 3 #########
@@ -217,9 +268,28 @@ f.close()
 # Create lists of NationalSite objects for each state's parks.
 
 # HINT: Get a Python list of all the HTML BeautifulSoup instances that represent each park, for each state.
+print(mi_soup.prettify())
+mi_parks = mi_soup.find('ul', {'id':'list_parks'}) 
+
+
+soup_stefan = mi_parks.find('div', {'classs':'col-md-9 col-sm-9 col-xs-12 table-cell list_left'})
+#print(soup_stefan.prettify())
+
+sites = []
+for park in mi_parks:
+    site = mi_parks.find_all('li', class_="clearfix")
+    #print(site.prettify())
+    #sites.append(site)
+
+#for m in sites:
+   #inst = NationalSite(m)
 
 
 
+
+#sample_inst = NationalSite(soup_stefan)
+#print(sample_inst)
+#print(sample_inst.get_mailing_address())
 
 ##Code to help you test these out:
 # for p in california_natl_sites:
