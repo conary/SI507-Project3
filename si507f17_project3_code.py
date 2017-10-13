@@ -74,16 +74,9 @@ for i in image_texts:
 
 # We've provided comments to guide you through the complex try/except, but if you prefer to build up the code to do this scraping and caching yourself, that is OK.
 
-try:
-    pass
-except Exception as e:
-    raise
-else:
-    pass
-finally:
-    pass
-
 main_html = get_from_cache("https://www.nps.gov/index.htm","nps_gov_data.html")
+
+
 
 
 
@@ -130,17 +123,17 @@ except:
             final_urls.append(url)
         if "/ca/" in url:
             final_urls.append(url)
-        if "mi" in url:
+        if "/mi/" in url:
             final_urls.append(url)
     print(final_urls)
     
 # Create 3 URLs to access data from by appending those 3 href values to the main part of the NPS url. Save each URL in a variable.
     for state in final_urls:
-        if "ar" in state:
+        if "/ar/" in state:
             arkansas_url = "https://www.nps.gov" + state
-        if "ca" in state:
+        if "/ca/" in state:
             california_url = "https://www.nps.gov" + state
-        if "mi" in state:
+        if "/mi/" in state:
             michigan_url = "https://www.nps.gov" + state
 
     print(arkansas_url)
@@ -163,18 +156,20 @@ except:
 
 # And then, write each set of data to a file so this won't have to run again.
 
-    print(arkansas_html)
-    print(california_html)
-    print(michigan_html)
-
-
+    #print(arkansas_html)
+    #print(california_html)
+    #print(michigan_html)
 
 
 
 ######### PART 2 #########
 
 ## Before truly embarking on Part 2, we recommend you do a few things:
+ar_soup = BeautifulSoup(arkansas_html, 'html.parser')
+ca_soup = BeautifulSoup(california_html, 'html.parser')
+mi_soup = BeautifulSoup(michigan_html, 'html.parser')
 
+#print(ar_soup.prettify())
 # - Create BeautifulSoup objects out of all the data you have access to in variables from Part 1
 # - Do some investigation on those BeautifulSoup objects. What data do you have about each state? How is it organized in HTML?
 
@@ -189,21 +184,32 @@ except:
 # Remember that there are things you'll have to be careful about listed in the instructions -- e.g. if no type of park/site/monument is listed in input, one of your instance variables should have a None value...
 
 
-
+#print("Title", mi_soup.title)
+#print("Some Text", mi_soup.get_text())
 
 
 ## Define your class NationalSite here:
 
+class NationalSite:
+    def __init__(self, bs):
+        self.location = bs.find('h4').text
+        self.type = bs.find('h2').text
+        self.name = bs.find('h3').text
+        self.description = bs.find('p').text
+        print(self.name)
+        print(self.type)
+        print(self.location)
+        print(self.description)
 
 
 
 
 ## Recommendation: to test the class, at various points, uncomment the following code and invoke some of the methods / check out the instance variables of the test instance saved in the variable sample_inst:
 
-# f = open("sample_html_of_park.html",'r')
-# soup_park_inst = BeautifulSoup(f.read(), 'html.parser') # an example of 1 BeautifulSoup instance to pass into your class
-# sample_inst = NationalSite(soup_park_inst)
-# f.close()
+f = open("sample_html_of_park.html",'r')
+soup_park_inst = BeautifulSoup(f.read(), 'html.parser') # an example of 1 BeautifulSoup instance to pass into your class
+sample_inst = NationalSite(soup_park_inst)
+f.close()
 
 
 ######### PART 3 #########
