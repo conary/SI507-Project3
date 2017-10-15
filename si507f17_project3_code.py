@@ -107,6 +107,7 @@ except:
 # Create a BeautifulSoup instance of main page data 
 
     soup = BeautifulSoup(main_html, 'html.parser')
+    #print(soup.type)
     #print(soup.prettify)
 
 # Access the unordered list with the states' dropdown
@@ -199,9 +200,15 @@ class NationalSite:
     def __init__(self, bs):
         self.location = bs.find('h4').text
         self.cache_fn = self.location[-2] + self.location[-1]
-        self.type = bs.find('h2').text
+        try:
+            self.type = bs.find('h2').text
+        except:
+            self.type = 'None'
         self.name = bs.find('h3').text
-        self.description = bs.find('p').text
+        try: 
+            self.description = bs.find('p').text
+        except:
+            self.description = ''
         self.detail_url_part = bs.find('a').get('href')
         self.detail_url = "https://www.nps.gov" + self.detail_url_part + "index.htm"
 
@@ -268,9 +275,10 @@ class NationalSite:
 # Create lists of NationalSite objects for each state's parks.
 
 # HINT: Get a Python list of all the HTML BeautifulSoup instances that represent each park, for each state.
-print(mi_soup.prettify())
+#print(mi_soup.prettify())
+#print(mi_soup.type)
 mi_parks = mi_soup.find('ul', {'id':'list_parks'}) 
-
+#print(mi_parks)
 
 soup_stefan = mi_parks.find('div', {'classs':'col-md-9 col-sm-9 col-xs-12 table-cell list_left'})
 #print(soup_stefan.prettify())
