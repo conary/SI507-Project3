@@ -275,29 +275,46 @@ class NationalSite:
 # Create lists of NationalSite objects for each state's parks.
 
 # HINT: Get a Python list of all the HTML BeautifulSoup instances that represent each park, for each state.
+#print("Here comes mi_soup")
 #print(mi_soup.prettify())
 #print(mi_soup.type)
 mi_parks = mi_soup.find('ul', {'id':'list_parks'}) 
-#print(mi_parks)
+#print("Herer comes mi_parks")
+#print(mi_parks.prettify())
 
-soup_stefan = mi_parks.find('div', {'classs':'col-md-9 col-sm-9 col-xs-12 table-cell list_left'})
+
+
+#print(mi_parks)
+#soup_stefan = BeautifulSoup(mi_parks, 'html.parser')
+
+#print("here comes stefan")
+#print(soup_stefan)
 #print(soup_stefan.prettify())
 
-sites = []
-for park in mi_parks:
-    site = mi_parks.find_all('li', class_="clearfix")
-    #print(site.prettify())
-    #sites.append(site)
+i=0
+site_list = []
+sites = mi_parks.find_all('li', class_="clearfix")
+for park in sites:
+    print("This is Park Nunber", i)
+    #print(park)
+    i = i + 1
+    park_soup = BeautifulSoup(str(park), 'html.parser')
+    site_obj = NationalSite(park_soup)
+    site_list.append(site_obj)
+
+
+
+print(site_list[1])
+
+
+
+
 
 #for m in sites:
    #inst = NationalSite(m)
 
 
 
-
-#sample_inst = NationalSite(soup_stefan)
-#print(sample_inst)
-#print(sample_inst.get_mailing_address())
 
 ##Code to help you test these out:
 # for p in california_natl_sites:
