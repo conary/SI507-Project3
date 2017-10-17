@@ -198,8 +198,14 @@ mi_soup = BeautifulSoup(michigan_html, 'html.parser')
 
 class NationalSite:
     def __init__(self, bs):
+        
         self.location = bs.find('h4').text
-        self.cache_fn = self.location[-2] + self.location[-1]
+        print(self.location)
+        if len(self.location) < 2:
+            self.location = ''
+            self.cache_fn = 'xx'
+        else:
+            self.cache_fn = self.location[-2] + self.location[-1]
         try:
             self.type = bs.find('h2').text
         except:
@@ -273,45 +279,46 @@ class NationalSite:
 ######### PART 3 #########
 
 # Create lists of NationalSite objects for each state's parks.
-
+#arkansas_natl_sites
+#california_natl_sites
+#michigan_natl_sites
 # HINT: Get a Python list of all the HTML BeautifulSoup instances that represent each park, for each state.
 #print("Here comes mi_soup")
 #print(mi_soup.prettify())
 #print(mi_soup.type)
-mi_parks = mi_soup.find('ul', {'id':'list_parks'}) 
+
 #print("Herer comes mi_parks")
 #print(mi_parks.prettify())
 
 
+def createSiteList(state_parks):
+    i=0
+    site_list = []
+    sites = state_parks.find_all('li', class_="clearfix")
+    for park in sites:
+        print("This is Park Nunber", i)
+        #print(park)
+        i = i + 1
+        park_soup = BeautifulSoup(str(park), 'html.parser')
+        site_obj = NationalSite(park_soup)
+        site_list.append(site_obj)
+    return site_list 
 
-#print(mi_parks)
-#soup_stefan = BeautifulSoup(mi_parks, 'html.parser')
-
-#print("here comes stefan")
-#print(soup_stefan)
-#print(soup_stefan.prettify())
-
-i=0
-site_list = []
-sites = mi_parks.find_all('li', class_="clearfix")
-for park in sites:
-    print("This is Park Nunber", i)
-    #print(park)
-    i = i + 1
-    park_soup = BeautifulSoup(str(park), 'html.parser')
-    site_obj = NationalSite(park_soup)
-    site_list.append(site_obj)
-
-
-
-print(site_list[1])
-
-
+michigan_natl_sites = createSiteList(mi_soup.find('ul', {'id':'list_parks'}))
+arkansas_natl_sites =  createSiteList(ar_soup.find('ul', {'id':'list_parks'}))
+california_natl_sites = createSiteList(ca_soup.find('ul', {'id':'list_parks'}))
+for i in michigan_natl_sites:
+    print ("I am a Michigan site: " + str(i))
+for i in arkansas_natl_sites:
+    print("I am an Arkansas site: " + str(i))
+for i in california_natl_sites:
+    print("I am a California site: " + str(i))
 
 
 
-#for m in sites:
-   #inst = NationalSite(m)
+
+
+
 
 
 
