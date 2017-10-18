@@ -208,10 +208,10 @@ class NationalSite:
             self.cache_fn = 'xx'
         else:
             self.cache_fn = self.location[-2] + self.location[-1]
-        try:
-            self.type = bs.find('h2').text
-        except:
+        if bs.find('h2').text == '':
             self.type = 'None'
+        else:
+            self.type = bs.find('h2').text
         self.name = bs.find('h3').text
         try: 
             self.description = bs.find('p').text
@@ -359,6 +359,7 @@ def createCSV(file_name, national_sites):
     with open(file_name, 'w', newline='') as f:
         writer = csv.writer(f)
         q = 0
+        writer.writerow(['Name', 'Location', 'Type', 'Address', 'Description'])
         for obj in national_sites:
             print("row" + str(q))
             q = q + 1
