@@ -5,6 +5,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import ssl
+import csv
 
 
 #########
@@ -23,6 +24,7 @@ import ssl
 def get_from_cache(url,file_name):
     try:
         html = open(file_name,'r').read()
+        f.close()
     except:
         html = requests.get(url).text # request object FIRST and use .text to convert it to a string
         f = open(file_name,'w')
@@ -235,7 +237,7 @@ class NationalSite:
         detail_soup = BeautifulSoup(detail_html, 'html.parser')
         #print(detail_soup.prettify())
         if detail_soup.find('div', class_="mailing-address") == '':
-            return("")   
+            return(" ")   
         address = detail_soup.find('div', class_="mailing-address")
         street = address.find('div', {'itemprop':'address'}).text.strip()
         address_line = street.replace('\n', '/')
@@ -340,4 +342,62 @@ for i in california_natl_sites:
 ## Note that running this step for ALL your data make take a minute or few to run -- so it's a good idea to test any methods/functions you write with just a little bit of data, so running the program will take less time!
 
 ## Also remember that IF you have None values that may occur, you might run into some problems and have to debug for where you need to put in some None value / error handling!
+
+# outfile = open("arkansas.csv", "w")
+# outfile.write('"Name", "Location", "Type", "Address", "Description"\n')
+# for site_obj in arkansas_natl_sites:
+#     print(site_obj.name)
+#     print(site_obj.location)
+#     print(site_obj.type)
+#     print(site_obj.get_mailing_address())
+#     print(site_obj.description)
+
+#     outfile.write('"{}", "{}"\n'.format(site_obj.name, site_obj.location))
+
+
+
+
+with open("arkansas.csv", 'w', newline='') as f:
+    writer = csv.writer(f)
+    q = 0
+    for obj in arkansas_natl_sites:
+        print("row" + str(q))
+        q = q + 1
+        new_description = obj.description.strip()
+        new_description_new = new_description.replace('\n', '/')
+        writer.writerow([obj.name, obj.location, obj.type, obj.get_mailing_address(), new_description_new])
+
+
+
+
+
+#
+#outfile.close()
+
+# arkansas_csv
+
+# for site_obj in arkansas_natl_sites:
+#     site_obj[]
+
+
+
+#     l = [{ "id": 1, "x": 4}, { "id": 2, "x": 3}]
+# >>> {v["id"]: v for v in l}
+
+
+
+# #     with open('arkansas.csv', 'wb') as f:
+# #         writer = csv.writer(f)   
+# #         writer.writerows(site_obj)
+
+
+# with open('arkansas.csv', 'w') as csvfile:
+#     fieldnames = ['first_name', 'last_name']
+#     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+#     writer.writeheader()
+#     writer.writerow({'first_name': 'Baked', 'last_name': 'Beans'})
+#     writer.writerow({'first_name': 'Lovely', 'last_name': 'Spam'})
+#     writer.writerow({'first_name': 'Wonderful', 'last_name': 'Spam'})
+
 
