@@ -355,49 +355,17 @@ for i in california_natl_sites:
 #     outfile.write('"{}", "{}"\n'.format(site_obj.name, site_obj.location))
 
 
+def createCSV(file_name, national_sites):
+    with open(file_name, 'w', newline='') as f:
+        writer = csv.writer(f)
+        q = 0
+        for obj in national_sites:
+            print("row" + str(q))
+            q = q + 1
+            description_clean = obj.description.strip()
+            description_final = description_clean.replace('\n', '/')
+            writer.writerow([obj.name, obj.location, obj.type, obj.get_mailing_address(), description_final])
 
-
-with open("arkansas.csv", 'w', newline='') as f:
-    writer = csv.writer(f)
-    q = 0
-    for obj in arkansas_natl_sites:
-        print("row" + str(q))
-        q = q + 1
-        new_description = obj.description.strip()
-        new_description_new = new_description.replace('\n', '/')
-        writer.writerow([obj.name, obj.location, obj.type, obj.get_mailing_address(), new_description_new])
-
-
-
-
-
-#
-#outfile.close()
-
-# arkansas_csv
-
-# for site_obj in arkansas_natl_sites:
-#     site_obj[]
-
-
-
-#     l = [{ "id": 1, "x": 4}, { "id": 2, "x": 3}]
-# >>> {v["id"]: v for v in l}
-
-
-
-# #     with open('arkansas.csv', 'wb') as f:
-# #         writer = csv.writer(f)   
-# #         writer.writerows(site_obj)
-
-
-# with open('arkansas.csv', 'w') as csvfile:
-#     fieldnames = ['first_name', 'last_name']
-#     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-#     writer.writeheader()
-#     writer.writerow({'first_name': 'Baked', 'last_name': 'Beans'})
-#     writer.writerow({'first_name': 'Lovely', 'last_name': 'Spam'})
-#     writer.writerow({'first_name': 'Wonderful', 'last_name': 'Spam'})
-
-
+createCSV("michigan.csv", michigan_natl_sites)
+createCSV("arkansas.csv", arkansas_natl_sites)
+createCSV("california.csv", california_natl_sites)
